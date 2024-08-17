@@ -1,10 +1,11 @@
+import random
+import re
+import string
 import typing as T
 from enum import Enum
-import random
-import string
-import re
-from pydantic import BaseModel, Field
+
 import sqlparse
+from pydantic import BaseModel, Field
 
 
 class PostgresDriver(str, Enum):
@@ -14,6 +15,10 @@ class PostgresDriver(str, Enum):
 
 
 ListT = T.TypeVar("ListT")
+
+
+def random_string(length: int) -> str:
+    return "".join(random.choice(string.ascii_letters) for _ in range(length))
 
 
 def chunk_list(lst: list[ListT], chunk_size: int) -> list[list[ListT]]:
@@ -55,7 +60,12 @@ class Selection(BaseModel):
     def is_simple_column(self) -> bool:
         if not isinstance(self, SelectionField):
             return False
-        return self.name == self.path or self.path == f"$current.{self.name}" or self.path == f'"{self.path}"' or self.path == f'$current."{self.name}"'
+        return (
+            self.name == self.path
+            or self.path == f"$current.{self.name}"
+            or self.path == f'"{self.path}"'
+            or self.path == f'$current."{self.name}"'
+        )
 
 
 class SelectionField(Selection):
@@ -263,7 +273,7 @@ class QueryBuilder(BaseModel):
                 )
                 variables[new_var_name] = var_val
                 # now, must regex the str to find this and replace it
-                regex = re.compile(r"\${}(?!\w)".format(var_name))
+                regex = re.compile(rf"\${var_name}(?!\w)")
                 s = regex.sub(f"${new_var_name}", s)
             else:
                 variables[var_name] = var_val
@@ -354,6 +364,10 @@ class QueryBuilder(BaseModel):
             table_alias = self.table_alias
         else:
             table_alias = "__".join(new_path).replace('"', "").replace(".", "__")
+            if len(table_alias) > 55:
+                table_alias = (
+                    f"{table_alias[0:10]}{random_string(10)}{table_alias[-10:]}"
+                )
         if not path:
             if table_alias.lower() == self.table_name.lower().replace('"', ""):
                 table_alias = f"_{table_alias}"
