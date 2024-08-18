@@ -191,7 +191,7 @@ class Resolver:
                     # this must be a function
                     kwargs = {
                         arg.name: parse_value(variables=self.variables, v=arg.value)
-                        for arg in child.arguments
+                        for arg in child.arguments if arg.display_name in self.variables
                     }
                     proms_map[name_to_return] = self.inject_dependencies_and_execute(
                         method=getattr(model, child.name),
