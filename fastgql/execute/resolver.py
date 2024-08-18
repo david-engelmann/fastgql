@@ -11,6 +11,7 @@ from fastgql.gql_models import GQL, GQLError
 from fastgql.depends import Depends
 from fastgql.execute.utils import InfoType, parse_value, Info, ContextType
 from fastgql.utils import node_from_path
+import pydantic_core
 
 
 class Resolver:
@@ -189,10 +190,13 @@ class Resolver:
             else:
                 if child.name not in model.model_fields:
                     # this must be a function
-                    kwargs = {
-                        arg.name: parse_value(variables=self.variables, v=arg.value)
-                        for arg in child.arguments if arg.display_name in self.variables
-                    }
+
+                    kwargs = {}
+                    for arg in child.arguments:
+                        _v = parse_value(variables=self.variables, v=arg.value)
+                        if _v != pydantic_core.PydanticUndefined:
+                            kwargs[arg.name] = _v
+
                     proms_map[name_to_return] = self.inject_dependencies_and_execute(
                         method=getattr(model, child.name),
                         node=child,

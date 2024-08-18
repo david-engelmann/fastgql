@@ -1,4 +1,6 @@
 import typing as T
+
+import pydantic_core
 from fastapi import Request, Response
 from collections import OrderedDict
 from dataclasses import dataclass
@@ -120,7 +122,7 @@ def parse_value(variables: dict[str, T.Any] | None, v: T.Any) -> T.Any:
         return [parse_value(variables=variables, v=inner_v) for inner_v in v]
     if isinstance(v, graphql.VariableNode):
         if v.name.value not in variables:
-            raise Exception(f"Variable {v.name.value} was not given.")
+            return pydantic_core.PydanticUndefined
         return variables[v.name.value]
     return v
 
