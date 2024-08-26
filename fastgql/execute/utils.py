@@ -1,7 +1,7 @@
 import typing as T
 
 import pydantic_core
-from fastapi import Request, Response
+from fastapi import Request, Response, BackgroundTasks
 from collections import OrderedDict
 from dataclasses import dataclass
 
@@ -33,7 +33,7 @@ class Result:
 RESULT_WRAPPERS = T.Optional[
     T.List[
         T.Callable[
-            [GraphQLRequestData, Result, dict[str, T.Any], Request, Response],
+            [GraphQLRequestData, Result, dict[str, T.Any], Request, Response, BackgroundTasks],
             T.Coroutine[T.Any, T.Any, Result],
         ]
     ]

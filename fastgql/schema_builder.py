@@ -664,7 +664,7 @@ class SchemaBuilder:
                 "extensions": res.extensions,
             }
             for wrapper in self.executor.result_wrappers:
-                res = wrapper(request_data, res, result_d, request, response)
+                res = wrapper(request_data, res, result_d, request, response, background_tasks)
                 if inspect.isawaitable(res):
                     res = await res
             json_r = ORJSONResponse(result_d)
