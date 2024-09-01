@@ -77,7 +77,7 @@ class Translator:
             return None
         children: list[FieldNode | InlineFragmentNode] = []
         root_field = self.get_root_type(type_=gql_field)
-        selection_q = [*node.selection_set.selections]
+        selection_q = list({*node.selection_set.selections})
 
         # first, flatten and combine them
         has_seen: dict[str, graphql.InlineFragmentNode | graphql.FieldNode] = {}
