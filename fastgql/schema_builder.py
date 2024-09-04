@@ -34,6 +34,9 @@ from fastgql.execute.executor import Executor, InfoType, ContextType
 from fastgql.query_builders.edgedb import logic as qb_logic
 from fastgql.query_builders.sql import logic as sql_qb_logic
 from fastgql.context import BaseContext
+from logs import create_logger
+
+logger = create_logger("fastgql")
 
 BASEMODEL_DIR: list[str] = dir(pydantic.BaseModel)
 GQL_DIR: list[str] = [*dir(GQL), *dir(GQLInput), *dir(GQLInterface)]
@@ -85,6 +88,7 @@ def parse_request_data(data: T.Mapping[str, T.Any]) -> GraphQLRequestData:
     operation_name = data.get("operationName")
     if not operation_name:
         operation_name = get_operation_name(query)
+    logger.debug(f"Operation Name: {operation_name}")
     return GraphQLRequestData(
         query=query,
         variables=data.get("variables"),
@@ -664,7 +668,9 @@ class SchemaBuilder:
                 "extensions": res.extensions,
             }
             for wrapper in self.executor.result_wrappers:
-                res = wrapper(request_data, res, result_d, request, response, background_tasks)
+                res = wrapper(
+                    request_data, res, result_d, request, response, background_tasks
+                )
                 if inspect.isawaitable(res):
                     res = await res
             json_r = ORJSONResponse(result_d)
