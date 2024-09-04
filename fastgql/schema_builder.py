@@ -34,7 +34,7 @@ from fastgql.execute.executor import Executor, InfoType, ContextType
 from fastgql.query_builders.edgedb import logic as qb_logic
 from fastgql.query_builders.sql import logic as sql_qb_logic
 from fastgql.context import BaseContext
-from logs import create_logger
+from fastgql.logs import create_logger
 
 logger = create_logger("fastgql")
 
