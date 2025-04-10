@@ -335,9 +335,9 @@ class SchemaBuilder:
                 )
             print(f"creating input field\ntype_: {type_}\n\ndefault_value: {default_value}\n")
             if description:
-                print(f"description: {description}\n\n")
+                print(f"description: {field_info} {description}\n\n")
             else:
-                print(f"description: {field_info.description}\n\n")
+                print(f"field_info: {field_info}\n\n")
             field = graphql.GraphQLInputField(
                 type_=type_,
                 description=description or field_info.description,
