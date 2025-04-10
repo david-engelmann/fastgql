@@ -8,6 +8,10 @@ on:
 jobs:
   build-and-release:
     runs-on: ubuntu-latest
+    env:
+      # Disable actions/cache usage
+      ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
+      ACTIONS_SETUP_PYTHON_DISABLE_CACHE: true
     steps:
       - uses: actions/checkout@v4
       
@@ -30,4 +34,3 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: dist/*
-          token: ${{ secrets.GITHUB_TOKEN }}
