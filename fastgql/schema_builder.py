@@ -300,6 +300,12 @@ class SchemaBuilder:
             elif origin is None:
                 raise Exception("Cannot return None for a graphql type.")
             else:
+                print(f"origin type: {type(origin)}")
+                print(f"origin: {origin}")
+                print(f"og_args type: {type(og_args)}")
+                print(f"og_args: {og_args}")
+                print(f"args type: {type(args)}")
+                print(f"args: {args}")
                 raise Exception(f"Invalid here {a=}")
         if not nullable:
             type_ = graphql.GraphQLNonNull(type_)
@@ -333,11 +339,6 @@ class SchemaBuilder:
                     if field_info.default is not pydantic_core.PydanticUndefined
                     else graphql.Undefined
                 )
-            print(f"creating input field\ntype_: {type_}\n\ndefault_value: {default_value}\n")
-            if description:
-                print(f"description: {field_info} {description}\n\n")
-            else:
-                print(f"field_info: {field_info}\n\n")
             field = graphql.GraphQLInputField(
                 type_=type_,
                 description=description or field_info.description,
