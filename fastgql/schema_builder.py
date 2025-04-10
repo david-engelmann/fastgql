@@ -333,6 +333,7 @@ class SchemaBuilder:
                     if field_info.default is not pydantic_core.PydanticUndefined
                     else graphql.Undefined
                 )
+            print(f"creating input field\ntype_: {type_}\n\ndefault_value: {default_value}\n\n")
             field = graphql.GraphQLInputField(
                 type_=type_,
                 description=description or field_info.description,
