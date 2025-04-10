@@ -3,15 +3,12 @@ name: Build and Release
 on:
   push:
     branches:
-      - main  # Run workflow on pushes to main branch
-  workflow_dispatch:  # Allow manual triggering
+      - main
+  workflow_dispatch:
 
 jobs:
   build-and-release:
     runs-on: ubuntu-latest
-    env:
-      # Disable actions/cache usage
-      ACTIONS_SETUP_PYTHON_DISABLE_CACHE: true
     steps:
       - uses: actions/checkout@v4
       
@@ -33,5 +30,6 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
+          tag_name: v0.1.0
           files: dist/*
           generate_release_notes: true
